@@ -5,9 +5,115 @@ app.use(express.json());
 
 console.log("Starting Vera AI server...");
 
-// ✅ ROOT ROUTE (THIS FIXES "Cannot GET /")
+// 🌐 UI Dashboard (Frontend inside backend)
 app.get("/", (req, res) => {
-  res.status(200).send("🚀 Server is live");
+  res.send(`
+    <html>
+      <head>
+        <title>Vera AI</title>
+        <style>
+          body {
+            font-family: Arial;
+            padding: 40px;
+            background: #f5f5f5;
+          }
+          .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          }
+          h2 {
+            margin-bottom: 10px;
+          }
+          select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+          }
+          button {
+            background: black;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+          }
+          button:hover {
+            background: #333;
+          }
+          #output {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+          }
+        </style>
+      </head>
+
+      <body>
+        <div class="card">
+          <h2>🚀 Vera AI Dashboard</h2>
+
+          <label>Category</label>
+          <select id="category">
+            <option value="restaurant">Restaurant</option>
+            <option value="salon">Salon</option>
+            <option value="pharmacy">Pharmacy</option>
+            <option value="grocery">Grocery</option>
+          </select>
+
+          <label>Trigger</label>
+          <select id="trigger">
+            <option value="high_search">High Search</option>
+            <option value="low_sales">Low Sales</option>
+            <option value="weekend">Weekend</option>
+            <option value="rainy_weather">Rainy Weather</option>
+            <option value="new_user_nearby">New User Nearby</option>
+            <option value="lunch_time">Lunch Time</option>
+            <option value="evening_peak">Evening Peak</option>
+          </select>
+
+          <label>Top Item</label>
+          <input id="top_item" placeholder="e.g. Pizza Combo" />
+
+          <button onclick="runVera()">Run Vera</button>
+
+          <div id="output"></div>
+        </div>
+
+        <script>
+          async function runVera() {
+            const category = document.getElementById("category").value;
+            const trigger = document.getElementById("trigger").value;
+            const top_item = document.getElementById("top_item").value;
+
+            document.getElementById("output").innerHTML = "⏳ Generating...";
+
+            const res = await fetch("/compose", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                category,
+                trigger,
+                merchant: { top_item }
+              })
+            });
+
+            const data = await res.json();
+
+            document.getElementById("output").innerHTML =
+              "<b>Message:</b><br>" + data.message + "<br><br>" +
+              "<b>CTA:</b> " + data.cta + "<br><br>" +
+              "<b>Rationale:</b> " + data.rationale;
+          }
+        </script>
+      </body>
+    </html>
+  `);
 });
 
 // ✅ Health check
@@ -15,7 +121,7 @@ app.get("/healthz", (req, res) => {
   res.send("OK");
 });
 
-// 🧠 Main AI logic
+// 🧠 Vera AI Logic
 function compose(context) {
   const { category, trigger, merchant } = context;
 
@@ -78,20 +184,25 @@ function compose(context) {
     cta,
     rationale,
     sender: "Vera",
-    suppression_key: `${category || "general"}_${trigger}`
+    suppression_key: \`\${category || "general"}_\${trigger}\`
   };
 }
 
 // 🚀 API endpoint
 app.post("/compose", (req, res) => {
+  console.log("📥 Request:", req.body);
+
   const result = compose(req.body);
+
+  console.log("📤 Response:", result);
+
   res.json(result);
 });
 
-// ▶️ Start server (Render-ready)
+// ▶️ Start server
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(\`🚀 Server running on port \${PORT}\`);
   console.log("🌐 Live: https://magicpin-vera-ai-jk0c.onrender.com/");
 });
