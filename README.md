@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Vera AI Challenge Submission
 
 ## Overview
@@ -36,3 +37,6 @@ This project is a context-aware decision engine that generates intelligent busin
   "trigger": "high_search",
   "merchant": { "top_item": "Pizza Combo" }
 }
+=======
+# magicpin-vera-ai
+>>>>>>> 2820c98d73ae507b15034874fc29dbc27dfd1e87
