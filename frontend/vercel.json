@@ -1,5 +1,12 @@
 {
   "routes": [
-    { "src": "/", "dest": "/frontend/home.html" }
+    {
+      "src": "/",
+      "dest": "/frontend/index.html"
+    },
+    {
+      "src": "/compose",
+      "dest": "/api/compose.js"
+    }
   ]
 }
