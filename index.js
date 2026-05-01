@@ -1,11 +1,20 @@
 const express = require("express");
-const app = express();
+const cors = require("cors");
 
-app.use(express.json());
+const app = express();
 
 console.log("Starting Vera AI server...");
 
-// ✅ ROOT ROUTE (THIS FIXES "Cannot GET /")
+// ✅ CORS CONFIG (allow only your frontend)
+app.use(cors({
+  origin: "https://magicpin-vera-ai.vercel.app",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
+app.use(express.json());
+
+// ✅ ROOT ROUTE
 app.get("/", (req, res) => {
   res.status(200).send("🚀 Server is live");
 });
