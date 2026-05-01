@@ -124,33 +124,37 @@
         </div>
 
         <script>
-          async function runVera() {
-            const category = document.getElementById("category").value;
-            const trigger = document.getElementById("trigger").value;
-            const top_item = document.getElementById("top_item").value;
+  async function runVera() {
+    const category = document.getElementById("category").value;
+    const trigger = document.getElementById("trigger").value;
+    const top_item = document.getElementById("top_item").value;
 
-            document.getElementById("output").innerHTML = "⏳ Generating...";
+    document.getElementById("output").innerHTML = "⏳ Generating...";
 
-            const res = await fetch("/compose", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                category,
-                trigger,
-                merchant: { top_item }
-              })
-            });
+    try {
+      const res = await fetch("https://magicpin-vera-ai-jk0c.onrender.com/compose", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category,
+          trigger,
+          merchant: { top_item }
+        })
+      });
 
-            const data = await res.json();
+      const data = await res.json();
 
-            document.getElementById("output").innerHTML =
-              "<div class='card'>" +
-              "<div class='label'>Message</div><div class='value'>" + data.message + "</div>" +
-              "<div class='label'>CTA</div><div class='value'>" + data.cta + "</div>" +
-              "<div class='label'>Rationale</div><div class='value'>" + data.rationale + "</div>" +
-              "</div>";
-          }
-        </script>
+      document.getElementById("output").innerHTML =
+        "<div class='card'>" +
+        "<div class='label'>Message</div><div class='value'>" + data.message + "</div>" +
+        "<div class='label'>CTA</div><div class='value'>" + data.cta + "</div>" +
+        "<div class='label'>Rationale</div><div class='value'>" + data.rationale + "</div>" +
+        "</div>";
 
-      </body>
+    } catch (err) {
+      document.getElementById("output").innerHTML =
+        "<div class='card'>❌ Failed to connect to server</div>";
+    }
+  }
+</script>      </body>
     </html>
