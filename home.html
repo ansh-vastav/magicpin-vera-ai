@@ -1,0 +1,156 @@
+
+    <html>
+      <head>
+        <title>Vera AI Demo</title>
+        <style>
+          body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+          }
+
+          .header {
+            padding: 20px;
+            background: #020617;
+            font-size: 20px;
+            font-weight: bold;
+          }
+
+          .container {
+            display: flex;
+            padding: 30px;
+            gap: 30px;
+          }
+
+          .panel {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+          }
+
+          .result {
+            flex: 1;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+          }
+
+          select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: none;
+            background: #334155;
+            color: white;
+          }
+
+          button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 6px;
+            border: none;
+            background: #22c55e;
+            font-weight: bold;
+            cursor: pointer;
+          }
+
+          button:hover {
+            background: #16a34a;
+          }
+
+          .card {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #020617;
+          }
+
+          .label {
+            opacity: 0.6;
+            font-size: 13px;
+          }
+
+          .value {
+            margin-bottom: 10px;
+          }
+        </style>
+      </head>
+
+      <body>
+
+        <div class="header">🤖 Vera AI – Smart Merchant Assistant</div>
+
+        <div class="container">
+
+          <!-- INPUT PANEL -->
+          <div class="panel">
+            <h3>Input</h3>
+
+            <label>Category</label>
+            <select id="category">
+              <option value="restaurant">Restaurant</option>
+              <option value="salon">Salon</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="grocery">Grocery</option>
+            </select>
+
+            <label>Trigger</label>
+            <select id="trigger">
+              <option value="high_search">High Search</option>
+              <option value="low_sales">Low Sales</option>
+              <option value="weekend">Weekend</option>
+              <option value="rainy_weather">Rainy Weather</option>
+              <option value="new_user_nearby">New User Nearby</option>
+              <option value="lunch_time">Lunch Time</option>
+              <option value="evening_peak">Evening Peak</option>
+            </select>
+
+            <label>Top Item</label>
+            <input id="top_item" placeholder="Pizza Combo" />
+
+            <button onclick="runVera()">Generate Suggestion</button>
+          </div>
+
+          <!-- RESULT PANEL -->
+          <div class="result">
+            <h3>AI Output</h3>
+            <div id="output"></div>
+          </div>
+
+        </div>
+
+        <script>
+          async function runVera() {
+            const category = document.getElementById("category").value;
+            const trigger = document.getElementById("trigger").value;
+            const top_item = document.getElementById("top_item").value;
+
+            document.getElementById("output").innerHTML = "⏳ Generating...";
+
+            const res = await fetch("/compose", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                category,
+                trigger,
+                merchant: { top_item }
+              })
+            });
+
+            const data = await res.json();
+
+            document.getElementById("output").innerHTML =
+              "<div class='card'>" +
+              "<div class='label'>Message</div><div class='value'>" + data.message + "</div>" +
+              "<div class='label'>CTA</div><div class='value'>" + data.cta + "</div>" +
+              "<div class='label'>Rationale</div><div class='value'>" + data.rationale + "</div>" +
+              "</div>";
+          }
+        </script>
+
+      </body>
+    </html>
