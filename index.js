@@ -10,6 +10,11 @@ app.get("/healthz", (req, res) => {
   res.send("OK");
 });
 
+// 🌐 Homepage
+app.get("/", (req, res) => {
+  res.send("🚀 Vera AI is live at https://magicpin-vera-ai-jk0c.onrender.com/");
+});
+
 // 🧠 Main AI logic
 function compose(context) {
   const { category, trigger, merchant } = context;
@@ -20,12 +25,12 @@ function compose(context) {
 
   // 🍕 Restaurant - high demand
   if (category === "restaurant" && trigger === "high_search") {
-     const demand = Math.floor(Math.random() * 100) + 100;
+    const demand = Math.floor(Math.random() * 100) + 100;
 
-  message = `Around ${demand} people nearby are searching for food right now. Your ${merchant?.top_item || "best combo"} is likely to perform well. Want me to push it with a limited-time offer?`;
+    message = `Around ${demand} people nearby are searching for food right now. Your ${merchant?.top_item || "best combo"} is likely to perform well. Want me to push it with a limited-time offer?`;
 
-  cta = "Promote Offer";
-  rationale = "High demand + top item → maximize conversions";
+    cta = "Promote Offer";
+    rationale = "High demand + top item → maximize conversions";
   }
 
   // 📉 Low sales
@@ -93,6 +98,10 @@ app.post("/compose", (req, res) => {
 });
 
 // ▶️ Start server
-app.listen(3000, "0.0.0.0", () => {
-  console.log("Server running on port 3000");
+const PORT = process.env.PORT || 3000;
+const LIVE_URL = "https://magicpin-vera-ai-jk0c.onrender.com/";
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Server running on port " + PORT);
+  console.log(`🚀 Vera AI is live at: ${LIVE_URL}`);
 });
